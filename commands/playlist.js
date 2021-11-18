@@ -17,17 +17,17 @@ module.exports = {
 
     if (!args.length)
       return message
-        .reply(i18n.__mf("playlist.usagesReply", { prefix: message.client.prefix }))
+        .channel.send(i18n.__mf("playlist.usagesReply", { prefix: message.client.prefix }))
         .catch(console.error);
-    if (!channel) return message.reply(i18n.__("playlist.errorNotChannel")).catch(console.error);
+    if (!channel) return message.channel.send(i18n.__("playlist.errorNotChannel")).catch(console.error);
 
     const permissions = channel.permissionsFor(message.client.user);
-    if (!permissions.has("CONNECT")) return message.reply(i18n.__("playlist.missingPermissionConnect"));
-    if (!permissions.has("SPEAK")) return message.reply(i18n.__("missingPermissionSpeak"));
+    if (!permissions.has("CONNECT")) return message.channel.send(i18n.__("playlist.missingPermissionConnect"));
+    if (!permissions.has("SPEAK")) return message.channel.send(i18n.__("missingPermissionSpeak"));
 
     if (serverQueue && channel !== message.guild.me.voice.channel)
       return message
-        .reply(i18n.__mf("play.errorNotInSameChannel", { user: message.client.user }))
+        .channel.send(i18n.__mf("play.errorNotInSameChannel", { user: message.client.user }))
         .catch(console.error);
 
     const search = args.join(" ");
@@ -55,7 +55,7 @@ module.exports = {
         videos = await playlist.getVideos(MAX_PLAYLIST_SIZE || 10, { part: "snippet" });
       } catch (error) {
         console.error(error);
-        return message.reply(i18n.__("playlist.errorNotFoundPlaylist")).catch(console.error);
+        return message.channel.send(i18n.__("playlist.errorNotFoundPlaylist")).catch(console.error);
       }
     } else if (scdl.isValidUrl(args[0])) {
       if (args[0].includes("/sets/")) {
@@ -74,7 +74,7 @@ module.exports = {
         videos = await playlist.getVideos(MAX_PLAYLIST_SIZE, { part: "snippet" });
       } catch (error) {
         console.error(error);
-        return message.reply(error.message).catch(console.error);
+        return message.channel.send(error.message).catch(console.error);
       }
     }
 

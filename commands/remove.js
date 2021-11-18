@@ -12,7 +12,7 @@ module.exports = {
 
     if (!queue) return message.channel.send(i18n.__("remove.errorNotQueue")).catch(console.error);
     if (!canModifyQueue(message.member)) return i18n.__("common.errorNotChannel");
-    if (!args.length) return message.reply(i18n.__mf("remove.usageReply", { prefix: message.client.prefix }));
+    if (!args.length) return message.channel.send(i18n.__mf("remove.usageReply", { prefix: message.client.prefix }));
 
     const arguments = args.join("");
     const songs = arguments.split(",").map((arg) => parseInt(arg));
@@ -40,7 +40,7 @@ module.exports = {
       );
     } else {
       console.log("we got the last one");
-      return message.reply(i18n.__mf("remove.usageReply", { prefix: message.client.prefix }));
+      return message.channel.send(i18n.__mf("remove.usageReply", { prefix: message.client.prefix }));
     }
   }
 };

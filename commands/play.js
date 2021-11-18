@@ -17,21 +17,21 @@ module.exports = {
 
     const serverQueue = message.client.queue.get(message.guild.id);
 
-    if (!channel) return message.reply(i18n.__("play.errorNotChannel")).catch(console.error);
+    if (!channel) return message.channel.send(i18n.__("play.errorNotChannel")).catch(console.error);
 
     if (serverQueue && channel !== message.guild.me.voice.channel)
       return message
-        .reply(i18n.__mf("play.errorNotInSameChannel", { user: message.client.user }))
+        .channel.send(i18n.__mf("play.errorNotInSameChannel", { user: message.client.user }))
         .catch(console.error);
 
     if (!args.length)
       return message
-        .reply(i18n.__mf("play.usageReply", { prefix: message.client.prefix }))
+        .channel.send(i18n.__mf("play.usageReply", { prefix: message.client.prefix }))
         .catch(console.error);
 
     const permissions = channel.permissionsFor(message.client.user);
-    if (!permissions.has("CONNECT")) return message.reply(i18n.__("play.missingPermissionConnect"));
-    if (!permissions.has("SPEAK")) return message.reply(i18n.__("play.missingPermissionSpeak"));
+    if (!permissions.has("CONNECT")) return message.channel.send(i18n.__("play.missingPermissionConnect"));
+    if (!permissions.has("SPEAK")) return message.channel.send(i18n.__("play.missingPermissionSpeak"));
 
     const search = args.join(" ");
     const videoPattern = /^(https?:\/\/)?(www\.)?(m\.|music\.)?(youtube\.com|youtu\.?be)\/.+$/gi;
@@ -54,14 +54,14 @@ module.exports = {
           if (res.statusCode == "302") {
             return message.client.commands.get("play").execute(message, [res.headers.location]);
           } else {
-            return message.reply(i18n.__("play.songNotFound")).catch(console.error);
+            return message.channel.send(i18n.__("play.songNotFound")).catch(console.error);
           }
         });
       } catch (error) {
         console.error(error);
-        return message.reply(error.message).catch(console.error);
+        return message.channel.send(error.message).catch(console.error);
       }
-      return message.reply("Following url redirection...").catch(console.error);
+      return message.channel.send("Following url redirection...").catch(console.error);
     }
 
     const queueConstruct = {
@@ -88,7 +88,7 @@ module.exports = {
         };
       } catch (error) {
         console.error(error);
-        return message.reply(error.message).catch(console.error);
+        return message.channel.send(error.message).catch(console.error);
       }
     } else if (scRegex.test(url)) {
       try {
@@ -100,14 +100,14 @@ module.exports = {
         };
       } catch (error) {
         console.error(error);
-        return message.reply(error.message).catch(console.error);
+        return message.channel.send(error.message).catch(console.error);
       }
     } else {
       try {
         const results = await youtube.searchVideos(search, 1, { part: "id" });
 
         if (!results.length) {
-          message.reply(i18n.__("play.songNotFound")).catch(console.error);
+          message.channel.send(i18n.__("play.songNotFound")).catch(console.error);
           return;
         }
 
@@ -121,9 +121,9 @@ module.exports = {
         console.error(error);
         
         if (error.message.includes("410")) {
-          return message.reply("Video is age restricted, private or unavailable").catch(console.error);
+          return message.channel.send("Video is age restricted, private or unavailable").catch(console.error);
         } else {
-          return message.reply(error.message).catch(console.error);
+          return message.channel.send(error.message).catch(console.error);
         }
       }
     }

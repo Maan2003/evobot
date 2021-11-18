@@ -69,7 +69,7 @@ client.on("message", async (message) => {
 
     if (now < expirationTime) {
       const timeLeft = (expirationTime - now) / 1000;
-      return message.reply(
+      return message.channel.send(
         i18n.__mf("common.cooldownMessage", { time: timeLeft.toFixed(1), name: command.name })
       );
     }
@@ -82,6 +82,6 @@ client.on("message", async (message) => {
     command.execute(message, args);
   } catch (error) {
     console.error(error);
-    message.reply(i18n.__("common.errorCommand")).catch(console.error);
+    message.channel.send(i18n.__("common.errorCommand")).catch(console.error);
   }
 });

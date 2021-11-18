@@ -9,7 +9,7 @@ module.exports = {
   async execute(message) {
     const permissions = message.channel.permissionsFor(message.client.user);
     if (!permissions.has(["MANAGE_MESSAGES", "ADD_REACTIONS"]))
-      return message.reply(i18n.__("queue.missingPermissionMessage"));
+      return message.channel.send(i18n.__("queue.missingPermissionMessage"));
 
     const queue = message.client.queue.get(message.guild.id);
     if (!queue || !queue.songs.length) return message.channel.send(i18n.__("queue.errorNotQueue"));
